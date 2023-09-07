@@ -1,4 +1,5 @@
-﻿using Escuela.Models;
+﻿using Azure.Core;
+using Escuela.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,15 +18,62 @@ namespace Escuela.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAulas()
+        public async Task<ActionResult> GetAulas()
         {
             return Ok(await _context.Aulas.ToListAsync());
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> PostAulas()
-        //{
-        //    return Ok(await _context.Aulas.)
-        //}
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetAulasid(int id)
+        {
+            var aula = await _context.Aulas.FindAsync(id);
+            if (aula == null)
+                return BadRequest("Aula no encontrada");
+            return Ok(aula);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<List<Aula>>> AddAula(Aula aula)
+        {
+            //Verificamos que no se pueda agregar un aula con el mismo nombre.
+            var nombreaula = _context.Aulas.FirstOrDefault(a => a.NombreAula == aula.NombreAula);
+            if (nombreaula != null)
+            {
+                return BadRequest("¡Ya existe un aula con el mismo nombre!");
+            }
+
+            //Si no hay datos duplicados se procede a guardar los datos en la base de datos.
+            _context.Aulas.Add(aula);
+            await _context.SaveChangesAsync();
+
+            return Ok(await _context.Aulas.ToListAsync());
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<List<Aula>>> UpdateAula(Aula request)
+        {
+            var dbaula = await _context.Aulas.FindAsync(request.IdAula);
+            if (dbaula == null)
+                return BadRequest("Aula no encontrada");
+
+            dbaula.NombreAula = request.NombreAula;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(await _context.Aulas.ToListAsync());
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<List<Aula>>> Delete(int id)
+        {
+            var dbaula = await _context.Aulas.FindAsync(id);
+            if (dbaula == null)
+                return BadRequest("Aula no encontrada");
+
+            _context.Aulas.Remove(dbaula);
+            await _context.SaveChangesAsync();
+
+            return Ok(await _context.Aulas.ToListAsync());
+        }
     }
 }

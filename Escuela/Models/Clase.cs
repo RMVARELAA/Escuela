@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Escuela.Models;
 
@@ -17,7 +18,9 @@ public partial class Clase
 
     public int? AulaId { get; set; }
 
+    [JsonIgnore]
     public virtual Aula? Aula { get; set; }
 
+    [JsonIgnore]
     public virtual Horario Hora { get; set; } = null!;
 }
