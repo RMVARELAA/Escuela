@@ -41,7 +41,7 @@ namespace Escuela.Controllers
                 return BadRequest("¡Ya existe una clase con el mismo nombre!");
             }
 
-            ////Verificamos que no se pueda agregar un Maestro con el mismo telefono.
+            //Verificamos que no se pueda agregar un Maestro con el mismo telefono.
             //var telefonomaestro = _context.Alumnos.FirstOrDefault(a => a.Telefono == alumno.Telefono);
             //if (telefonomaestro != null)
             //{

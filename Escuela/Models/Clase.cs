@@ -22,5 +22,5 @@ public partial class Clase
     public virtual Aula? Aula { get; set; }
 
     [JsonIgnore]
-    public virtual Horario Hora { get; set; } = null!;
+    public virtual Horario? Hora { get; set; }
 }
