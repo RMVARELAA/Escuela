@@ -20,10 +20,13 @@ public partial class Clase
 
     [JsonIgnore]
     public virtual Aula? Aula { get; set; }
+
     [JsonIgnore]
     public virtual Horario Hora { get; set; } = null!;
+
     [JsonIgnore]
     public virtual ICollection<MaestrosClase> MaestrosClases { get; set; } = new List<MaestrosClase>();
+
     [JsonIgnore]
     public virtual ICollection<MatriculaAlumno> MatriculaAlumnos { get; set; } = new List<MatriculaAlumno>();
 }
