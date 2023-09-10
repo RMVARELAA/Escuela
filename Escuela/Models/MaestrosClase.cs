@@ -6,19 +6,15 @@ namespace Escuela.Models;
 
 public partial class MaestrosClase
 {
-    public int? IdMaestros { get; set; }
+    public int IdClaseMaestro { get; set; }
 
-    public int? IdClase { get; set; }
+    public int IdMaestros { get; set; }
 
-    public int? IdAula { get; set; }
-
-    [JsonIgnore]
-    public virtual Aula? IdAulaNavigation { get; set; }
+    public int IdClase { get; set; }
 
     [JsonIgnore]
-
-    public virtual Clase? IdClaseNavigation { get; set; }
+    public virtual Clase IdClaseNavigation { get; set; } = null!;
 
     [JsonIgnore]
-    public virtual Maestro? IdMaestrosNavigation { get; set; }
+    public virtual Maestro IdMaestrosNavigation { get; set; } = null!;
 }

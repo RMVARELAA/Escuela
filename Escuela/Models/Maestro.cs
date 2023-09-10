@@ -15,4 +15,7 @@ public partial class Maestro
     public string Telefono { get; set; } = null!;
 
     public string Email { get; set; } = null!;
+
+    [JsonIgnore]
+    public virtual ICollection<MaestrosClase> MaestrosClases { get; set; } = new List<MaestrosClase>();
 }

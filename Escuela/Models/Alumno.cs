@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Escuela.Models;
 
@@ -14,4 +15,7 @@ public partial class Alumno
     public string Telefono { get; set; } = null!;
 
     public string Email { get; set; } = null!;
+
+    [JsonIgnore]
+    public virtual ICollection<MatriculaAlumno> MatriculaAlumnos { get; set; } = new List<MatriculaAlumno>();
 }

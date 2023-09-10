@@ -41,22 +41,44 @@ namespace Escuela.Controllers
                 return BadRequest("¡Ya existe una clase con el mismo nombre!");
             }
 
-            //Verificamos que no se pueda agregar un Maestro con el mismo telefono.
-            //var telefonomaestro = _context.Alumnos.FirstOrDefault(a => a.Telefono == alumno.Telefono);
-            //if (telefonomaestro != null)
-            //{
-            //    return BadRequest("¡Ya existe un alumno con el mismo telefono!");
-            //}
+            //Verificamos que no se pueda agregar una Clase en la misma aula.
+            var aulaclase = _context.Clases.FirstOrDefault(a => a.AulaId == clase.AulaId);
+            if (aulaclase != null)
+            {
+                return BadRequest("¡Ya existe una clase en esta aula!");
+            }
 
-            ////Verificamos que no se pueda agregar un Maestro con el mismo correo.
-            //var emailmaestro = _context.Alumnos.FirstOrDefault(a => a.Email == alumno.Email);
-            //if (emailmaestro != null)
-            //{
-            //    return BadRequest("¡Ya existe un alumno con el mismo correo!");
-            //}
+            // Convierte las horas ingresadas en formato string a objetos TimeSpan
+            TimeSpan horaInicial = TimeSpan.Parse(clase.HoraInicial);
+            TimeSpan horaFinal = TimeSpan.Parse(clase.HoraFinal);
+
+            // Verificar si ya existe una clase en la misma aula y en el mismo horario
+            var aulaclases = await _context.Clases.FirstOrDefaultAsync(a =>
+                a.AulaId == clase.AulaId &&
+                ((TimeSpan.Parse(a.HoraInicial) <= horaInicial && horaInicial < TimeSpan.Parse(a.HoraFinal)) ||
+                 (TimeSpan.Parse(a.HoraInicial) < horaFinal && horaFinal <= TimeSpan.Parse(a.HoraFinal)) ||
+                 (horaInicial <= TimeSpan.Parse(a.HoraInicial) && TimeSpan.Parse(a.HoraFinal) <= horaFinal)));
+
+            if (aulaclase != null)
+            {
+                return BadRequest("¡Ya existe una clase en esta aula y en el mismo horario!");
+            }
 
             //Si no hay datos duplicados se procede a guardar los datos en la base de datos.
             _context.Clases.Add(clase);
+            await _context.SaveChangesAsync();
+
+            return Ok(await _context.Clases.ToListAsync());
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<List<Clase>>> DeleteClase(int id)
+        {
+            var dbclase = await _context.Clases.FindAsync(id);
+            if (dbclase == null)
+                return BadRequest("Clase no encontrado");
+
+            _context.Clases.Remove(dbclase);
             await _context.SaveChangesAsync();
 
             return Ok(await _context.Clases.ToListAsync());

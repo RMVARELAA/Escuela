@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Escuela.Models;
 
 public partial class MatriculaAlumno
 {
-    public int? IdAlumno { get; set; }
+    public int IdMatriculaAlumno { get; set; }
 
-    public int? IdClase { get; set; }
+    public int IdAlumno { get; set; }
 
-    public int? IdAula { get; set; }
+    public int IdClase { get; set; }
 
-    public virtual Alumno? IdAlumnoNavigation { get; set; }
-
-    public virtual Aula? IdAulaNavigation { get; set; }
-
-    public virtual Clase? IdClaseNavigation { get; set; }
+    [JsonIgnore]
+    public virtual Alumno IdAlumnoNavigation { get; set; } = null!;
+    [JsonIgnore]
+    public virtual Clase IdClaseNavigation { get; set; } = null!;
 }

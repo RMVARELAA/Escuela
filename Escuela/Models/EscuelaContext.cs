@@ -120,7 +120,7 @@ public partial class EscuelaContext : DbContext
         {
             entity.HasKey(e => new { e.HoraInicial, e.HoraFinal });
 
-            entity.ToTable("HORARIOS");
+            entity.ToTable("HORARIOS", tb => tb.HasTrigger("TR_VerificarHorarios"));
 
             entity.Property(e => e.HoraInicial)
                 .HasMaxLength(15)
@@ -162,47 +162,43 @@ public partial class EscuelaContext : DbContext
 
         modelBuilder.Entity<MaestrosClase>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("MAESTROS_CLASES");
+            entity.HasKey(e => e.IdClaseMaestro).HasName("PK_Id_Clase_Maestro");
 
-            entity.Property(e => e.IdAula).HasColumnName("Id_Aula");
+            entity.ToTable("MAESTROS_CLASES");
+
+            entity.Property(e => e.IdClaseMaestro).HasColumnName("Id_Clase_Maestro");
             entity.Property(e => e.IdClase).HasColumnName("Id_Clase");
             entity.Property(e => e.IdMaestros).HasColumnName("Id_Maestros");
 
-            entity.HasOne(d => d.IdAulaNavigation).WithMany()
-                .HasForeignKey(d => d.IdAula)
-                .HasConstraintName("FK_Id_AulaMaestro");
-
-            entity.HasOne(d => d.IdClaseNavigation).WithMany()
+            entity.HasOne(d => d.IdClaseNavigation).WithMany(p => p.MaestrosClases)
                 .HasForeignKey(d => d.IdClase)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Id_ClaseMaestros");
 
-            entity.HasOne(d => d.IdMaestrosNavigation).WithMany()
+            entity.HasOne(d => d.IdMaestrosNavigation).WithMany(p => p.MaestrosClases)
                 .HasForeignKey(d => d.IdMaestros)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Id_Maestros");
         });
 
         modelBuilder.Entity<MatriculaAlumno>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("MATRICULA_ALUMNO");
+            entity.HasKey(e => e.IdMatriculaAlumno).HasName("PK_Id_Matricula_Alumno");
 
+            entity.ToTable("MATRICULA_ALUMNO");
+
+            entity.Property(e => e.IdMatriculaAlumno).HasColumnName("Id_Matricula_Alumno");
             entity.Property(e => e.IdAlumno).HasColumnName("Id_Alumno");
-            entity.Property(e => e.IdAula).HasColumnName("Id_Aula");
             entity.Property(e => e.IdClase).HasColumnName("Id_Clase");
 
-            entity.HasOne(d => d.IdAlumnoNavigation).WithMany()
+            entity.HasOne(d => d.IdAlumnoNavigation).WithMany(p => p.MatriculaAlumnos)
                 .HasForeignKey(d => d.IdAlumno)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Id_Alumno");
 
-            entity.HasOne(d => d.IdAulaNavigation).WithMany()
-                .HasForeignKey(d => d.IdAula)
-                .HasConstraintName("FK_Id_Aula");
-
-            entity.HasOne(d => d.IdClaseNavigation).WithMany()
+            entity.HasOne(d => d.IdClaseNavigation).WithMany(p => p.MatriculaAlumnos)
                 .HasForeignKey(d => d.IdClase)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Id_Clase");
         });
 
