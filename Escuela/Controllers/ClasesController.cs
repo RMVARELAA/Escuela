@@ -35,34 +35,18 @@ namespace Escuela.Controllers
         public async Task<ActionResult<List<Clase>>> AddClase(Clase clase)
         {
             //Verificamos que no se pueda agregar una Clase con el mismo nombre.
-            var nombreclase = _context.Clases.FirstOrDefault(a => a.Clase1 == clase.Clase1);
+            var nombreclase = _context.Clases.FirstOrDefault(a => a.NombreClase == clase.NombreClase);
             if (nombreclase != null)
             {
                 return BadRequest("¡Ya existe una clase con el mismo nombre!");
             }
 
-            //Verificamos que no se pueda agregar una Clase en la misma aula.
-            var aulaclase = _context.Clases.FirstOrDefault(a => a.AulaId == clase.AulaId);
-            if (aulaclase != null)
-            {
-                return BadRequest("¡Ya existe una clase en esta aula!");
-            }
-
-            // Convierte las horas ingresadas en formato string a objetos TimeSpan
-            TimeSpan horaInicial = TimeSpan.Parse(clase.HoraInicial);
-            TimeSpan horaFinal = TimeSpan.Parse(clase.HoraFinal);
-
-            // Verificar si ya existe una clase en la misma aula y en el mismo horario
-            var aulaclases = await _context.Clases.FirstOrDefaultAsync(a =>
-                a.AulaId == clase.AulaId &&
-                ((TimeSpan.Parse(a.HoraInicial) <= horaInicial && horaInicial < TimeSpan.Parse(a.HoraFinal)) ||
-                 (TimeSpan.Parse(a.HoraInicial) < horaFinal && horaFinal <= TimeSpan.Parse(a.HoraFinal)) ||
-                 (horaInicial <= TimeSpan.Parse(a.HoraInicial) && TimeSpan.Parse(a.HoraFinal) <= horaFinal)));
-
-            if (aulaclase != null)
-            {
-                return BadRequest("¡Ya existe una clase en esta aula y en el mismo horario!");
-            }
+            ////Verificamos que no se pueda agregar una Clase en la misma aula.
+            //var aulaclase = _context.Clases.FirstOrDefault(a => a.IdAula == clase.Id);
+            //if (aulaclase != null)
+            //{
+            //    return BadRequest("¡Ya existe una clase en esta aula!");
+            //}
 
             //Si no hay datos duplicados se procede a guardar los datos en la base de datos.
             _context.Clases.Add(clase);

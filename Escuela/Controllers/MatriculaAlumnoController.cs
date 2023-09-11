@@ -25,25 +25,24 @@ namespace Escuela.Controllers
         [HttpPost]
         public async Task<ActionResult<List<MatriculaAlumno>>> AddClaseAlumno(MatriculaAlumno matriculaAlumno)
         {
-            ////Verificamos que no se pueda agregar una Clase con el mismo nombre.
-            //var nombreclase = _context.Clases.FirstOrDefault(a => a.Clase1 == clase.Clase1);
-            //if (nombreclase != null)
-            //{
-            //    return BadRequest("¡Ya existe una clase con el mismo nombre!");
-            //}
+            int numRegistros = await _context.MatriculaAlumnos
+                .Where(m => m.IdAlumno == matriculaAlumno.IdAlumno)
+                .CountAsync();
 
-            ////Verificamos que no se pueda agregar una Clase en la misma aula.
-            //var aulaclase = _context.Clases.FirstOrDefault(a => a.AulaId == clase.AulaId);
-            //if (aulaclase != null)
-            //{
-            //    return BadRequest("¡Ya existe una clase en esta aula!");
-            //}
+            // Verifica si el número de registros es menor o igual a 5.
+            if (numRegistros < 5)
+            {
+                // Si no hay datos duplicados se procede a guardar los datos en la base de datos.
+                _context.MatriculaAlumnos.Add(matriculaAlumno);
+                await _context.SaveChangesAsync();
 
-            //Si no hay datos duplicados se procede a guardar los datos en la base de datos.
-            _context.MatriculaAlumnos.Add(matriculaAlumno);
-            await _context.SaveChangesAsync();
-
-            return Ok(await _context.MatriculaAlumnos.ToListAsync());
+                return Ok(await _context.MatriculaAlumnos.ToListAsync());
+            }
+            else
+            {
+                // Muestra un mensaje de error si se alcanza el límite de 5 IdSeccion.
+                return BadRequest("¡Se ha alcanzado el límite de 5 Clases para este Alumno!.");
+            }
         }
 
     }
