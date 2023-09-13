@@ -19,53 +19,97 @@ namespace Escuela.Controllers
         [HttpGet]
         public async Task<IActionResult> GetClases()
         {
-            return Ok(await _context.Clases.ToListAsync());
+            try
+            {
+                return Ok(await _context.Clases.ToListAsync());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult> GetClasesId(int id)
         {
-            var clase = await _context.Clases.FindAsync(id);
-            if (clase == null)
-                return BadRequest("Clase no encontrada");
-            return Ok(clase);
+            try
+            {
+                var clase = await _context.Clases.FindAsync(id);
+                if (clase == null)
+                    return BadRequest("Clase no encontrada");
+                return Ok(clase);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
         }
 
         [HttpPost]
         public async Task<ActionResult<List<Clase>>> AddClase(Clase clase)
         {
-            //Verificamos que no se pueda agregar una Clase con el mismo nombre.
-            var nombreclase = _context.Clases.FirstOrDefault(a => a.NombreClase == clase.NombreClase);
-            if (nombreclase != null)
+            try
             {
-                return BadRequest("¡Ya existe una clase con el mismo nombre!");
+                //Verificamos que no se pueda agregar una Clase con el mismo nombre.
+                var nombreclase = _context.Clases.FirstOrDefault(a => a.NombreClase == clase.NombreClase);
+                if (nombreclase != null)
+                {
+                    return BadRequest("¡Ya existe una clase con el mismo nombre!");
+                }
+
+                //Si no hay datos duplicados se procede a guardar los datos en la base de datos.
+                _context.Clases.Add(clase);
+                await _context.SaveChangesAsync();
+
+                return Ok(await _context.Clases.ToListAsync());
             }
-
-            ////Verificamos que no se pueda agregar una Clase en la misma aula.
-            //var aulaclase = _context.Clases.FirstOrDefault(a => a.IdAula == clase.Id);
-            //if (aulaclase != null)
-            //{
-            //    return BadRequest("¡Ya existe una clase en esta aula!");
-            //}
-
-            //Si no hay datos duplicados se procede a guardar los datos en la base de datos.
-            _context.Clases.Add(clase);
-            await _context.SaveChangesAsync();
-
-            return Ok(await _context.Clases.ToListAsync());
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
         }
+
+        [HttpPut]
+        public async Task<ActionResult<List<Clase>>> UpdateClase(Clase request)
+        {
+            try
+            {
+                var dbclase = await _context.Clases.FindAsync(request.IdClase);
+                if (dbclase == null)
+                    return BadRequest("Clase no encontrada");
+
+                dbclase.NombreClase = request.NombreClase;
+                dbclase.Uv = request.Uv;
+
+                await _context.SaveChangesAsync();
+
+                return Ok(await _context.Clases.ToListAsync());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
+        }
+
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<List<Clase>>> DeleteClase(int id)
         {
-            var dbclase = await _context.Clases.FindAsync(id);
-            if (dbclase == null)
-                return BadRequest("Clase no encontrado");
+            try
+            {
+                var dbclase = await _context.Clases.FindAsync(id);
+                if (dbclase == null)
+                    return BadRequest("Clase no encontrado");
 
-            _context.Clases.Remove(dbclase);
-            await _context.SaveChangesAsync();
+                _context.Clases.Remove(dbclase);
+                await _context.SaveChangesAsync();
 
-            return Ok(await _context.Clases.ToListAsync());
+                return Ok(await _context.Clases.ToListAsync());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
         }
     }
 }

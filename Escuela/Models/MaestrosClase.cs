@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Escuela.Models;
 
@@ -7,11 +8,13 @@ public partial class MaestrosClase
 {
     public int IdClaseMaestro { get; set; }
 
-    public int IdMaestros { get; set; }
+    public int? IdMaestros { get; set; }
 
-    public int IdSeccion { get; set; }
+    public int? IdSeccion { get; set; }
 
-    public virtual Maestro IdMaestrosNavigation { get; set; } = null!;
+    [JsonIgnore]
+    public virtual Maestro? IdMaestrosNavigation { get; set; }
 
-    public virtual Seccion IdSeccionNavigation { get; set; } = null!;
+    [JsonIgnore]
+    public virtual Seccion? IdSeccionNavigation { get; set; }
 }

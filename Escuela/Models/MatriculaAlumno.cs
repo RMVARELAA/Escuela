@@ -14,7 +14,7 @@ public partial class MatriculaAlumno
 
     [JsonIgnore]
     public virtual Alumno? IdAlumnoNavigation { get; set; }
-    
+
     [JsonIgnore]
     public virtual Seccion? IdSeccionNavigation { get; set; }
 }

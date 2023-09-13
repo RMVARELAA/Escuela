@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Escuela.Models;
 
@@ -13,5 +14,6 @@ public partial class Clase
 
     public byte Uv { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<Seccion> Seccions { get; set; } = new List<Seccion>();
 }
