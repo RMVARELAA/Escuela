@@ -71,13 +71,20 @@ namespace Escuela.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<List<Aula>>> UpdateAula(Aula request)
+        public async Task<ActionResult<List<Aula>>> UpdateAula(int id, Aula request)
         {
             try
             {
                 var dbaula = await _context.Aulas.FindAsync(request.IdAula);
                 if (dbaula == null)
                     return BadRequest("Aula no encontrada");
+
+                //Verificamos que no se pueda agregar un aula con el mismo nombre.
+                var nombreaula = _context.Aulas.FirstOrDefault(a => a.NombreAula == request.NombreAula);
+                if (nombreaula != null)
+                {
+                    return BadRequest("¡Ya existe un aula con el mismo nombre!");
+                }
 
                 dbaula.NombreAula = request.NombreAula;
 

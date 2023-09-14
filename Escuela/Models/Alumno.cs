@@ -17,5 +17,5 @@ public partial class Alumno
     public string Email { get; set; } = null!;
 
     [JsonIgnore]
-    public virtual ICollection<MatriculaAlumno> MatriculaAlumnos { get; set; } = new List<MatriculaAlumno>();
+    public virtual ICollection<Matricula> Matriculas { get; set; } = new List<Matricula>();
 }

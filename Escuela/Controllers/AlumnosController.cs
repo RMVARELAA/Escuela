@@ -91,6 +91,27 @@ namespace Escuela.Controllers
                 if (dbalumno == null)
                     return BadRequest("Alumno no encontrado");
 
+                //Verificamos que no se pueda agregar un Maestro con el mismo nombre.
+                var nombrealumno = _context.Alumnos.FirstOrDefault(a => a.Nombre == request.Nombre);
+                if (nombrealumno != null)
+                {
+                    return BadRequest("¡Ya existe un alumno con el mismo nombre!");
+                }
+
+                //Verificamos que no se pueda agregar un Maestro con el mismo telefono.
+                var telefonomaestro = _context.Alumnos.FirstOrDefault(a => a.Telefono == request.Telefono);
+                if (telefonomaestro != null)
+                {
+                    return BadRequest("¡Ya existe un alumno con el mismo telefono!");
+                }
+
+                //Verificamos que no se pueda agregar un Maestro con el mismo correo.
+                var emailmaestro = _context.Alumnos.FirstOrDefault(a => a.Email == request.Email);
+                if (emailmaestro != null)
+                {
+                    return BadRequest("¡Ya existe un alumno con el mismo correo!");
+                }
+
                 dbalumno.Nombre = request.Nombre;
                 dbalumno.Telefono = request.Telefono;
                 dbalumno.Email = request.Email;

@@ -84,13 +84,34 @@ namespace Escuela.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<List<Maestro>>> UpdateMaestros(Maestro request)
+        public async Task<ActionResult<List<Maestro>>> UpdateMaestros(int id, Maestro request)
         {
             try
             {
                 var dbmaestro = await _context.Maestros.FindAsync(request.IdMaestros);
                 if (dbmaestro == null)
                     return BadRequest("Maestro no encontrado");
+
+                //Verificamos que no se pueda agregar un Maestro con el mismo nombre.
+                var nombremaestro = _context.Maestros.FirstOrDefault(a => a.Nombre == request.Nombre);
+                if (nombremaestro != null)
+                {
+                    return BadRequest("¡Ya existe un maestro con el mismo nombre!");
+                }
+
+                //Verificamos que no se pueda agregar un Maestro con el mismo telefono.
+                var telefonomaestro = _context.Maestros.FirstOrDefault(a => a.Telefono == request.Telefono);
+                if (telefonomaestro != null)
+                {
+                    return BadRequest("¡Ya existe un maestro con el mismo telefono!");
+                }
+
+                //Verificamos que no se pueda agregar un Maestro con el mismo correo.
+                var emailmaestro = _context.Maestros.FirstOrDefault(a => a.Email == request.Email);
+                if (emailmaestro != null)
+                {
+                    return BadRequest("¡Ya existe un maestro con el mismo correo!");
+                }
 
                 dbmaestro.Nombre = request.Nombre;
                 dbmaestro.Telefono = request.Telefono;

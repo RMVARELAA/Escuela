@@ -8,6 +8,8 @@ public partial class Seccion
 {
     public int IdSeccion { get; set; }
 
+    public int? IdMaestro { get; set; }
+
     public int? IdClase { get; set; }
 
     public int? IdAula { get; set; }
@@ -23,8 +25,8 @@ public partial class Seccion
     public virtual Clase? IdClaseNavigation { get; set; }
 
     [JsonIgnore]
-    public virtual ICollection<MaestrosClase> MaestrosClases { get; set; } = new List<MaestrosClase>();
+    public virtual Maestro? IdMaestroNavigation { get; set; }
 
     [JsonIgnore]
-    public virtual ICollection<MatriculaAlumno> MatriculaAlumnos { get; set; } = new List<MatriculaAlumno>();
+    public virtual ICollection<Matricula> Matriculas { get; set; } = new List<Matricula>();
 }

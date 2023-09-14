@@ -78,6 +78,13 @@ namespace Escuela.Controllers
                 if (dbclase == null)
                     return BadRequest("Clase no encontrada");
 
+                //Verificamos que no se pueda agregar una Clase con el mismo nombre.
+                var nombreclase = _context.Clases.FirstOrDefault(a => a.NombreClase == request.NombreClase);
+                if (nombreclase != null)
+                {
+                    return BadRequest("¡Ya existe una clase con el mismo nombre!");
+                }
+
                 dbclase.NombreClase = request.NombreClase;
                 dbclase.Uv = request.Uv;
 

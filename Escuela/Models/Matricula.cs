@@ -4,9 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace Escuela.Models;
 
-public partial class MatriculaAlumno
+public partial class Matricula
 {
-    public int IdMatriculaAlumno { get; set; }
+    public int IdMatricula { get; set; }
 
     public int? IdAlumno { get; set; }
 

@@ -23,15 +23,15 @@ public partial class EscuelaContext : DbContext
 
     public virtual DbSet<Maestro> Maestros { get; set; }
 
-    public virtual DbSet<MaestrosClase> MaestrosClases { get; set; }
-
-    public virtual DbSet<MatriculaAlumno> MatriculaAlumnos { get; set; }
+    public virtual DbSet<Matricula> Matriculas { get; set; }
 
     public virtual DbSet<Seccion> Seccions { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=ESCUELA;Trusted_Connection=true;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=ESCUELA;Trusted_Connection=true;TrustServerCertificate=True;")
+                .EnableSensitiveDataLogging(); // Habilitar el registro de datos sensibles
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -129,40 +129,21 @@ public partial class EscuelaContext : DbContext
                 .IsUnicode(false);
         });
 
-        modelBuilder.Entity<MaestrosClase>(entity =>
+        modelBuilder.Entity<Matricula>(entity =>
         {
-            entity.HasKey(e => e.IdClaseMaestro).HasName("PK_Id_Clase_Maestro");
+            entity.HasKey(e => e.IdMatricula).HasName("PK_Id_Matricula");
 
-            entity.ToTable("MAESTROS_CLASES");
+            entity.ToTable("MATRICULA");
 
-            entity.Property(e => e.IdClaseMaestro).HasColumnName("Id_Clase_Maestro");
-            entity.Property(e => e.IdMaestros).HasColumnName("Id_Maestros");
-            entity.Property(e => e.IdSeccion).HasColumnName("Id_Seccion");
-
-            entity.HasOne(d => d.IdMaestrosNavigation).WithMany(p => p.MaestrosClases)
-                .HasForeignKey(d => d.IdMaestros)
-                .HasConstraintName("FK_Id_Maestros");
-
-            entity.HasOne(d => d.IdSeccionNavigation).WithMany(p => p.MaestrosClases)
-                .HasForeignKey(d => d.IdSeccion)
-                .HasConstraintName("FK_Id_Seccion_Maestros");
-        });
-
-        modelBuilder.Entity<MatriculaAlumno>(entity =>
-        {
-            entity.HasKey(e => e.IdMatriculaAlumno).HasName("PK_Id_Matricula_Alumno");
-
-            entity.ToTable("MATRICULA_ALUMNO");
-
-            entity.Property(e => e.IdMatriculaAlumno).HasColumnName("Id_Matricula_Alumno");
+            entity.Property(e => e.IdMatricula).HasColumnName("Id_Matricula");
             entity.Property(e => e.IdAlumno).HasColumnName("Id_Alumno");
             entity.Property(e => e.IdSeccion).HasColumnName("Id_Seccion");
 
-            entity.HasOne(d => d.IdAlumnoNavigation).WithMany(p => p.MatriculaAlumnos)
+            entity.HasOne(d => d.IdAlumnoNavigation).WithMany(p => p.Matriculas)
                 .HasForeignKey(d => d.IdAlumno)
                 .HasConstraintName("FK_Id_Alumno");
 
-            entity.HasOne(d => d.IdSeccionNavigation).WithMany(p => p.MatriculaAlumnos)
+            entity.HasOne(d => d.IdSeccionNavigation).WithMany(p => p.Matriculas)
                 .HasForeignKey(d => d.IdSeccion)
                 .HasConstraintName("FK_Id_Seccion");
         });
@@ -174,18 +155,21 @@ public partial class EscuelaContext : DbContext
             entity.ToTable("SECCION");
 
             entity.Property(e => e.IdSeccion).HasColumnName("Id_Seccion");
-            entity.Property(e => e.HoraFinal).HasColumnName("Hora_Final");
-            entity.Property(e => e.HoraInicial).HasColumnName("Hora_Inicial");
             entity.Property(e => e.IdAula).HasColumnName("Id_Aula");
             entity.Property(e => e.IdClase).HasColumnName("Id_Clase");
+            entity.Property(e => e.IdMaestro).HasColumnName("Id_Maestro");
 
             entity.HasOne(d => d.IdAulaNavigation).WithMany(p => p.Seccions)
                 .HasForeignKey(d => d.IdAula)
-                .HasConstraintName("FK_AulaId");
+                .HasConstraintName("FK_Id_Aula");
 
             entity.HasOne(d => d.IdClaseNavigation).WithMany(p => p.Seccions)
                 .HasForeignKey(d => d.IdClase)
-                .HasConstraintName("FK_Codigo_Clase");
+                .HasConstraintName("FK_Id_Clase");
+
+            entity.HasOne(d => d.IdMaestroNavigation).WithMany(p => p.Seccions)
+                .HasForeignKey(d => d.IdMaestro)
+                .HasConstraintName("FK_Id_Maestro");
         });
 
         OnModelCreatingPartial(modelBuilder);
